@@ -11,8 +11,8 @@ export default function AdminGiris() {
   const router = useRouter();
 
   // Admin bilgileri - ileride veritabanına taşınacak
-  const ADMIN_KULLANICI = "admin";
-  const ADMIN_SIFRE = "ucuzuygun2024";
+  const ADMIN_KULLANICI = "evren";
+  const ADMIN_SIFRE = "istanbul135246";
 
   const handleGiris = () => {
     setYukleniyor(true);

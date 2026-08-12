@@ -1,4 +1,34 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function AdminPanel() {
+  const router = useRouter();
+  const [yukleniyor, setYukleniyor] = useState(true);
+
+  useEffect(() => {
+    const giris = localStorage.getItem("adminGiris");
+    if (giris !== "true") {
+      router.push("/admin/giris");
+    } else {
+      setYukleniyor(false);
+    }
+  }, [router]);
+
+  const cikisYap = () => {
+    localStorage.removeItem("adminGiris");
+    router.push("/admin/giris");
+  };
+
+  if (yukleniyor) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-500">Yükleniyor...</div>
+      </div>
+    );
+  }
+
   const istatistikler = [
     { label: "Toplam Ürün", value: "14", icon: "📦", color: "bg-blue-500" },
     { label: "Toplam Satıcı", value: "5", icon: "🏪", color: "bg-green-500" },
@@ -24,7 +54,7 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      
+
       {/* SOL MENU */}
       <aside className="w-56 bg-gray-900 text-white min-h-screen fixed">
         <div className="p-4 border-b border-gray-700">
@@ -42,49 +72,42 @@ export default function AdminPanel() {
               { icon: "📈", label: "Raporlar", active: false },
               { icon: "⚙️", label: "Ayarlar", active: false },
             ].map((item) => (
-              <div
-                key={item.label}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm ${
-                  item.active ? "bg-orange-500 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                }`}
-              >
+              <div key={item.label} className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm ${item.active ? "bg-orange-500 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}>
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
               </div>
             ))}
           </div>
-          <div className="mt-8 pt-4 border-t border-gray-700">
+          <div className="mt-8 pt-4 border-t border-gray-700 space-y-1">
             <a href="/" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white text-sm cursor-pointer">
-              <span>🌐</span>
-              <span>Siteye Git</span>
+              <span>🌐</span><span>Siteye Git</span>
             </a>
+            <button onClick={cikisYap} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-red-800 hover:text-white text-sm cursor-pointer">
+              <span>🚪</span><span>Çıkış Yap</span>
+            </button>
           </div>
         </nav>
       </aside>
 
       {/* ANA İÇERİK */}
       <main className="ml-56 flex-1 p-6">
-        
+
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
             <p className="text-gray-500 text-sm">Hoş geldiniz, Admin!</p>
           </div>
-          <div className="flex gap-3">
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600">
-              + Yeni Ürün Ekle
-            </button>
-          </div>
+          <button className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600">
+            + Yeni Ürün Ekle
+          </button>
         </div>
 
         {/* İSTATİSTİKLER */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {istatistikler.map((stat) => (
             <div key={stat.label} className="bg-white rounded-lg p-4 flex items-center gap-4">
-              <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-2xl`}>
-                {stat.icon}
-              </div>
+              <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-2xl`}>{stat.icon}</div>
               <div>
                 <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
                 <div className="text-gray-500 text-xs">{stat.label}</div>
@@ -94,7 +117,7 @@ export default function AdminPanel() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* ÜRÜNLER TABLOSU */}
           <div className="md:col-span-2 bg-white rounded-lg p-4">
             <div className="flex justify-between items-center mb-4">
@@ -150,9 +173,7 @@ export default function AdminPanel() {
             <div className="space-y-3">
               {saticilar.map((satici) => (
                 <div key={satici.name} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <div className={`w-9 h-9 rounded-full ${satici.color} flex items-center justify-center text-white text-sm font-bold`}>
-                    {satici.initials}
-                  </div>
+                  <div className={`w-9 h-9 rounded-full ${satici.color} flex items-center justify-center text-white text-sm font-bold`}>{satici.initials}</div>
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-700">{satici.name}</div>
                     <div className="text-xs text-gray-400">{satici.urunSayisi} ürün · ⭐ {satici.puan}</div>
@@ -178,9 +199,7 @@ export default function AdminPanel() {
               { icon: "🌐", text: "Site yayına alındı: ucuzuygun.com", time: "1 gün önce", color: "bg-orange-100 text-orange-500" },
             ].map((aktivite, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full ${aktivite.color} flex items-center justify-center text-sm`}>
-                  {aktivite.icon}
-                </div>
+                <div className={`w-8 h-8 rounded-full ${aktivite.color} flex items-center justify-center text-sm`}>{aktivite.icon}</div>
                 <div className="flex-1">
                   <div className="text-sm text-gray-700">{aktivite.text}</div>
                   <div className="text-xs text-gray-400">{aktivite.time}</div>

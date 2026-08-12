@@ -1,16 +1,26 @@
-export default function Home() {
-  const products = [
+import { supabase } from '@/lib/supabase'
+
+async function getUrunler() {
+  const { data, error } = await supabase
+    .from('urunler')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Hata:', error)
+    return []
+  }
+  return data || []
+}
+
+export default async function Home() {
+  const urunler = await getUrunler()
+
+  const statikUrunler = [
     { id: "1", icon: "🎧", name: "Kablosuz Kulaklık Pro", price: "849", oldPrice: "1.499", discount: "43" },
     { id: "2", icon: "👟", name: "Spor Ayakkabı Erkek", price: "629", oldPrice: "999", discount: "37" },
     { id: "3", icon: "⌚", name: "Akıllı Saat Siyah", price: "1.249", oldPrice: "1.899", discount: "34" },
     { id: "4", icon: "👜", name: "Deri Çanta Kadın", price: "459", oldPrice: "799", discount: "43" },
-  ];
-
-  const products2 = [
-    { id: "1", icon: "💻", name: "Laptop Standı Alüminyum", price: "349", oldPrice: null, discount: null },
-    { id: "2", icon: "🕯️", name: "Kokulu Mum Seti 3'lü", price: "189", oldPrice: "279", discount: "32" },
-    { id: "3", icon: "📷", name: "Mini Anlık Fotoğraf Makinesi", price: "1.099", oldPrice: "1.499", discount: "27" },
-    { id: "4", icon: "🎮", name: "Oyun Kolu Kablosuz", price: "799", oldPrice: "1.199", discount: "33" },
   ];
 
   return (
@@ -76,6 +86,28 @@ export default function Home() {
         </div>
       </div>
 
+      {/* VERİTABANINDAN GELEN ÜRÜNLER */}
+      {urunler.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">🆕 Yeni Eklenen Ürünler</h3>
+            <span className="text-gray-400 text-sm">{urunler.length} ürün</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {urunler.map((urun: any) => (
+              <div key={urun.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:-translate-y-1 transition-transform">
+                <div className="h-36 bg-gray-50 flex items-center justify-center text-5xl">📦</div>
+                <div className="p-3">
+                  <p className="text-xs text-gray-400 mb-1">{urun.satici}</p>
+                  <p className="text-sm text-gray-700 mb-2">{urun.ad}</p>
+                  <span className="text-orange-500 font-bold">{urun.fiyat} TL</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* GÜNÜN FIRSATLARI */}
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex justify-between items-center mb-4">
@@ -83,7 +115,7 @@ export default function Home() {
           <button className="text-orange-500 text-sm">Tümü →</button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products.map((product) => (
+          {statikUrunler.map((product) => (
             <a key={product.id} href={`/urun/${product.id}`} className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:-translate-y-1 transition-transform block">
               <div className="h-36 bg-gray-50 flex items-center justify-center text-5xl">{product.icon}</div>
               <div className="p-3">
@@ -101,7 +133,7 @@ export default function Home() {
       </div>
 
       {/* ÖNE ÇIKAN DÜKKANLAR */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto px-4 py-4 pb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Öne Çıkan Dükkanlar</h3>
           <button className="text-orange-500 text-sm">Tümü →</button>
@@ -119,30 +151,6 @@ export default function Home() {
               <span className="text-xs font-medium text-center">{store.name}</span>
               <span className="text-xs text-gray-400">⭐ 4.8</span>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* SANA ÖZEL */}
-      <div className="max-w-7xl mx-auto px-4 py-4 pb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Sana Özel Ürünler</h3>
-          <button className="text-orange-500 text-sm">Tümü →</button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products2.map((product) => (
-            <a key={product.name} href={`/urun/${product.id}`} className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:-translate-y-1 transition-transform block">
-              <div className="h-36 bg-gray-50 flex items-center justify-center text-5xl">{product.icon}</div>
-              <div className="p-3">
-                <p className="text-xs text-gray-500 mb-1">{product.name}</p>
-                <div className="flex items-center gap-1 flex-wrap">
-                  <span className="text-orange-500 font-bold">{product.price} TL</span>
-                  {product.oldPrice && <span className="text-gray-400 text-xs line-through">{product.oldPrice} TL</span>}
-                  {product.discount && <span className="bg-red-500 text-white text-xs px-1 rounded">%{product.discount}</span>}
-                </div>
-                <div className="text-yellow-400 text-xs mt-1">★★★★★</div>
-              </div>
-            </a>
           ))}
         </div>
       </div>
