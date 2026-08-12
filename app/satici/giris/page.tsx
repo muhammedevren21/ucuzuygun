@@ -52,7 +52,7 @@ export default function SaticiGiris() {
       return
     }
 
-    window.location.href = '/satici/panel'
+    window.location.replace('/satici/panel')
   }
 
   return (
