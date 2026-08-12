@@ -2,11 +2,9 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SaticiGiris() {
-  const router = useRouter()
   const [form, setForm] = useState({ eposta: '', sifre: '' })
   const [hata, setHata] = useState('')
   const [yukleniyor, setYukleniyor] = useState(false)
@@ -41,20 +39,20 @@ export default function SaticiGiris() {
     }
 
     if (satici.durum === 'beklemede') {
-      setHata('Hesabınız henüz admin tarafından onaylanmadı. Lütfen bekleyin.')
+      setHata('Hesabınız henüz onaylanmadı.')
       await supabase.auth.signOut()
       setYukleniyor(false)
       return
     }
 
     if (satici.durum === 'pasif') {
-      setHata('Hesabınız pasife alınmıştır. Admin ile iletişime geçin.')
+      setHata('Hesabınız pasife alınmıştır.')
       await supabase.auth.signOut()
       setYukleniyor(false)
       return
     }
 
-    router.push('/satici/panel')
+    window.location.href = '/satici/panel'
   }
 
   return (
