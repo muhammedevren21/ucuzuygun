@@ -41,16 +41,16 @@ export default function AdminSaticilar() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Satıcı Başvuruları</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900">Satıcı Başvuruları</h1>
 
       {yukleniyor ? (
-        <p>Yükleniyor...</p>
+        <p className="text-gray-900">Yükleniyor...</p>
       ) : saticilar.length === 0 ? (
-        <p className="text-gray-500">Henüz satıcı başvurusu yok.</p>
+        <p className="text-gray-900">Henüz satıcı başvurusu yok.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full bg-white rounded-xl shadow text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-gray-50 text-gray-900 font-semibold">
               <tr>
                 <th className="p-3 text-left">Ad</th>
                 <th className="p-3 text-left">Mağaza</th>
@@ -63,10 +63,10 @@ export default function AdminSaticilar() {
             <tbody>
               {saticilar.map(s => (
                 <tr key={s.id} className="border-t hover:bg-gray-50">
-                  <td className="p-3">{s.ad}</td>
-                  <td className="p-3 font-medium">{s.magaza_adi}</td>
-                  <td className="p-3">{s.eposta}</td>
-                  <td className="p-3">{s.telefon || '-'}</td>
+                  <td className="p-3 text-gray-900 font-medium">{s.ad}</td>
+                  <td className="p-3 text-gray-900 font-medium">{s.magaza_adi}</td>
+                  <td className="p-3 text-gray-900">{s.eposta}</td>
+                  <td className="p-3 text-gray-900">{s.telefon || '-'}</td>
                   <td className="p-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${durumRengi(s.durum)}`}>
                       {s.durum}
