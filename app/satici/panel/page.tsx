@@ -20,23 +20,23 @@ export default function SaticiPanel() {
   const [saticiId, setSaticiId] = useState<string | null>(null)
 
   useEffect(() => {
-    const kontrol = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push('/satici/giris')
-        return
-      }
-      setSaticiId(session.user.id)
-      const { data } = await supabase
-        .from('urunler')
-        .select('*')
-        .eq('satici_id', session.user.id)
-        .order('id', { ascending: false })
-      setUrunler(data || [])
-      setYukleniyor(false)
+  const kontrol = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      window.location.href = '/satici/giris'
+      return
     }
-    kontrol()
-  }, [])
+    setSaticiId(user.id)
+    const { data } = await supabase
+      .from('urunler')
+      .select('*')
+      .eq('satici_id', user.id)
+      .order('id', { ascending: false })
+    setUrunler(data || [])
+    setYukleniyor(false)
+  }
+  kontrol()
+}, [])
 
   const urunSil = async (id: number) => {
     if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return
