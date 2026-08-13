@@ -52,9 +52,10 @@ export default function SaticiGiris() {
       return
     }
 
-    setTimeout(() => {
-  window.location.href = '/satici/panel'
-}, 500)
+    if (!user) {
+  console.log('kullanici yok')
+  // geçici olarak yönlendirme kapalı
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
