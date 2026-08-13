@@ -52,8 +52,9 @@ export default function SaticiGiris() {
       return
     }
 
-    window.location.replace('/satici/panel')
-  }
+    setTimeout(() => {
+  window.location.href = '/satici/panel'
+}, 500)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
