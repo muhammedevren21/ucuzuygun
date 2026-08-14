@@ -1,7 +1,14 @@
 import { supabase } from '@/lib/supabase'
 
 async function getUrunler() {
-  const { data, error } = await supabase
+  const { createClient } = await import('@supabase/supabase-js')
+  const client = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { global: { fetch: fetch } }
+  )
+  
+  const { data, error } = await client
     .from('urunler')
     .select('*')
     .order('created_at', { ascending: false })
@@ -10,6 +17,7 @@ async function getUrunler() {
     console.error('Hata:', error)
     return []
   }
+  console.log('Gelen ürünler:', data)
   return data || []
 }
 
@@ -24,7 +32,7 @@ export default async function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 text-gray-900">
       {/* HEADER */}
       <header className="bg-orange-500">
         <div className="max-w-7xl mx-auto px-4">
@@ -86,27 +94,35 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* VERİTABANINDAN GELEN ÜRÜNLER */}
-      {urunler.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">🆕 Yeni Eklenen Ürünler</h3>
-            <span className="text-gray-400 text-sm">{urunler.length} ürün</span>
+{/* VERİTABANINDAN GELEN ÜRÜNLER */}
+{urunler.length > 0 && (
+  <div className="max-w-7xl mx-auto px-4 py-4">
+    <div className="flex justify-between items-center mb-4">
+      <h3 className="text-lg font-semibold">🆕 Yeni Eklenen Ürünler</h3>
+      <span className="text-gray-400 text-sm">{urunler.length} ürün</span>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {urunler.map((urun: any) => (
+        <a key={urun.id} href={`/urun/${urun.id}`}
+          className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:-translate-y-1 transition-transform block">
+          <div className="h-36 bg-gray-50 flex items-center justify-center overflow-hidden">
+            {urun.resim_url ? (
+              <img src={urun.resim_url} alt={urun.ad}
+                className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-5xl">📦</span>
+            )}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {urunler.map((urun: any) => (
-              <div key={urun.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:-translate-y-1 transition-transform">
-                <div className="h-36 bg-gray-50 flex items-center justify-center text-5xl">📦</div>
-                <div className="p-3">
-                  <p className="text-xs text-gray-400 mb-1">{urun.satici}</p>
-                  <p className="text-sm text-gray-700 mb-2">{urun.ad}</p>
-                  <span className="text-orange-500 font-bold">{urun.fiyat} TL</span>
-                </div>
-              </div>
-            ))}
+          <div className="p-3">
+            <p className="text-xs text-gray-400 mb-1">{urun.magaza_adi}</p>
+            <p className="text-sm text-gray-700 mb-2 line-clamp-2">{urun.ad}</p>
+            <span className="text-orange-500 font-bold">{urun.fiyat} ₺</span>
           </div>
-        </div>
-      )}
+        </a>
+      ))}
+    </div>
+  </div>
+)}
 
       {/* GÜNÜN FIRSATLARI */}
       <div className="max-w-7xl mx-auto px-4 py-4">
