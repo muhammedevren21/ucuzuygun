@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import HeaderIkonlar from '@/app/components/HeaderIkonlar'
 
 function GeriSayimKampanya() {
   const [kalan, setKalan] = useState({ gun: 0, saat: 0, dakika: 0, saniye: 0 })
@@ -98,27 +99,66 @@ export default function SaticiKayit() {
 
   if (basarili) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-xl shadow text-center max-w-md">
-          <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Hoş Geldiniz!</h2>
-          <p className="text-gray-600 mb-2">
-            Kurucu satıcılarımız arasına katıldınız!
-          </p>
-          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
-            <p className="text-orange-700 font-bold text-lg">%5 Komisyon Hakkı Kazandınız! 🎯</p>
-            <p className="text-orange-600 text-sm">E-postanızı doğruladıktan sonra başvurunuz incelenecek.</p>
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-orange-500 sticky top-0 z-50 shadow-md">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center gap-3 py-3">
+              <a href="/" className="flex flex-col whitespace-nowrap">
+                <span className="text-white text-2xl font-black tracking-tight leading-none">
+                  ucuzuygun<span className="text-yellow-400">.com</span>
+                </span>
+                <span className="text-orange-200 text-xs font-light tracking-wide">sadece indirimli ürünler</span>
+              </a>
+              <div className="ml-auto">
+                <HeaderIkonlar />
+              </div>
+            </div>
           </div>
-          <Link href="/" className="text-orange-500 hover:underline text-sm">
-            Ana sayfaya dön
-          </Link>
+        </header>
+        <div className="flex items-center justify-center min-h-[calc(100vh-70px)]">
+          <div className="bg-white p-8 rounded-xl shadow text-center max-w-md mx-4">
+            <div className="text-5xl mb-4">🎉</div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Hoş Geldiniz!</h2>
+            <p className="text-gray-600 mb-2">Kurucu satıcılarımız arasına katıldınız!</p>
+            <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
+              <p className="text-orange-700 font-bold text-lg">%5 Komisyon Hakkı Kazandınız! 🎯</p>
+              <p className="text-orange-600 text-sm">E-postanızı doğruladıktan sonra başvurunuz incelenecek.</p>
+            </div>
+            <Link href="/" className="text-orange-500 hover:underline text-sm">
+              Ana sayfaya dön
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50">
+
+      {/* HEADER */}
+      <header className="bg-orange-500 sticky top-0 z-50 shadow-md">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-3 py-3 flex-wrap">
+            <a href="/" className="flex flex-col whitespace-nowrap order-1">
+              <span className="text-white text-2xl font-black tracking-tight leading-none">
+                ucuzuygun<span className="text-yellow-400">.com</span>
+              </span>
+              <span className="text-orange-200 text-xs font-light tracking-wide">sadece indirimli ürünler</span>
+            </a>
+            <form action="/arama" method="get" className="flex order-3 sm:order-2 w-full sm:flex-1 sm:max-w-2xl">
+              <input type="text" name="q" placeholder="Ürün, marka veya kategori ara..."
+                className="flex-1 px-4 py-2.5 rounded-l-lg outline-none text-gray-800 text-sm" />
+              <button type="submit" className="bg-yellow-400 hover:bg-yellow-300 px-5 py-2.5 rounded-r-lg font-bold text-gray-800 text-sm transition">
+                Ara
+              </button>
+            </form>
+            <div className="ml-auto sm:ml-0 order-2 sm:order-3">
+              <HeaderIkonlar />
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* KAMPANYA BANNER */}
       <div className="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-8 px-4 mb-8">
@@ -131,13 +171,11 @@ export default function SaticiKayit() {
             İlk 1000 satıcıya özel <strong className="text-yellow-300">%5 komisyon</strong> fırsatı — normal oran %12
           </p>
 
-          {/* SAYAÇ */}
           <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-5 max-w-sm mx-auto">
             <p className="text-sm text-orange-100 mb-3">⏰ Kampanya bitiyor:</p>
             <GeriSayimKampanya />
           </div>
 
-          {/* DOLULUK */}
           <div className="max-w-sm mx-auto">
             <div className="flex justify-between text-sm mb-2">
               <span className="text-orange-100">847 satıcı aramıza katıldı</span>
@@ -177,11 +215,9 @@ export default function SaticiKayit() {
       </div>
 
       {/* FORM */}
-      <div className="max-w-md mx-auto px-4">
+      <div className="max-w-md mx-auto px-4 pb-8">
         <div className="bg-white p-8 rounded-2xl shadow">
-          <h2 className="text-xl font-bold text-gray-800 mb-1 text-center">
-            Hemen Başvur
-          </h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-1 text-center">Hemen Başvur</h2>
           <p className="text-center text-sm text-gray-500 mb-6">%5 komisyon hakkını şimdi garantile</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -192,7 +228,6 @@ export default function SaticiKayit() {
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-900"
                 placeholder="Ahmet Yılmaz" />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Mağaza Adı</label>
               <input type="text" required value={form.magaza_adi}
@@ -200,7 +235,6 @@ export default function SaticiKayit() {
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-900"
                 placeholder="Ahmet'in Elektroniği" />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
               <input type="tel" value={form.telefon}
@@ -208,7 +242,6 @@ export default function SaticiKayit() {
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-900"
                 placeholder="05xx xxx xx xx" />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
               <input type="email" required value={form.eposta}
@@ -216,7 +249,6 @@ export default function SaticiKayit() {
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-900"
                 placeholder="ornek@email.com" />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
               <input type="password" required minLength={6} value={form.sifre}
