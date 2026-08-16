@@ -99,20 +99,20 @@ export default function SaticiPanel() {
               <tbody>
                 {urunler.map(u => (
                   <tr key={u.id} className="border-t hover:bg-gray-50">
-                    <td className="p-3">
-                      <img src={u.resim} alt={u.ad} className="w-12 h-12 object-cover rounded-lg" />
-                    </td>
-                    <td className="p-3 text-gray-900 font-medium">{u.ad}</td>
-                    <td className="p-3 text-gray-700">{u.kategori}</td>
-                    <td className="p-3 text-gray-900 font-semibold">{u.fiyat} ₺</td>
-                    <td className="p-3">
-                      <button
-                        onClick={() => urunSil(u.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-600"
-                      >
-                        Sil
-                      </button>
-                    </td>
+                    <td className="p-3 flex gap-2">
+  <Link
+    href={`/satici/panel/urun-duzenle/${u.id}`}
+    className="bg-blue-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-blue-600"
+  >
+    Düzenle
+  </Link>
+  <button
+    onClick={() => urunSil(u.id)}
+    className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-600"
+  >
+    Sil
+  </button>
+</td>
                   </tr>
                 ))}
               </tbody>
