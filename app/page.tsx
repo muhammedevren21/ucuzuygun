@@ -11,14 +11,26 @@ async function getUrunler() {
   return data || []
 }
 
+function getBadge(urun: any) {
+  const indirim = urun.indirim_orani || 0
+  const created = new Date(urun.created_at)
+  const simdi = new Date()
+  const gunFarki = (simdi.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+
+  if (indirim >= 50) return { label: '🔥 Çok Satan', bg: 'bg-orange-500' }
+  if (gunFarki <= 7) return { label: '🆕 Yeni', bg: 'bg-blue-500' }
+  if (indirim >= 30) return { label: '⚡ Fırsat', bg: 'bg-yellow-500' }
+  return null
+}
+
 export default async function Home() {
   const urunler = await getUrunler()
 
   const statikUrunler = [
-    { id: "s1", icon: "🎧", name: "Kablosuz Kulaklık Pro", price: "849", oldPrice: "1.499", discount: "43", rating: "4.8", reviews: "2.841" },
-    { id: "s2", icon: "👟", name: "Spor Ayakkabı Erkek", price: "629", oldPrice: "999", discount: "37", rating: "4.5", reviews: "1.203" },
-    { id: "s3", icon: "⌚", name: "Akıllı Saat Siyah", price: "1.249", oldPrice: "1.899", discount: "34", rating: "4.9", reviews: "987" },
-    { id: "s4", icon: "👜", name: "Deri Çanta Kadın", price: "459", oldPrice: "799", discount: "43", rating: "4.6", reviews: "532" },
+    { id: "s1", icon: "🎧", name: "Kablosuz Kulaklık Pro", price: "849", oldPrice: "1.499", discount: "43", rating: "4.8", reviews: "2.841", badge: { label: "🔥 Çok Satan", bg: "bg-orange-500" } },
+    { id: "s2", icon: "👟", name: "Spor Ayakkabı Erkek", price: "629", oldPrice: "999", discount: "37", rating: "4.5", reviews: "1.203", badge: { label: "⚡ Fırsat", bg: "bg-yellow-500" } },
+    { id: "s3", icon: "⌚", name: "Akıllı Saat Siyah", price: "1.249", oldPrice: "1.899", discount: "34", rating: "4.9", reviews: "987", badge: { label: "⭐ Çok Beğenilen", bg: "bg-purple-500" } },
+    { id: "s4", icon: "👜", name: "Deri Çanta Kadın", price: "459", oldPrice: "799", discount: "43", rating: "4.6", reviews: "532", badge: { label: "🔥 Çok Satan", bg: "bg-orange-500" } },
   ]
 
   const kategoriler = [
@@ -49,7 +61,6 @@ export default async function Home() {
       {/* HEADER */}
       <header className="bg-orange-500 sticky top-0 z-50 shadow-md">
         <div className="max-w-7xl mx-auto px-4">
-          {/* FIX: flex-wrap ile mobilde input ikinci satıra iner */}
           <div className="flex items-center gap-3 py-3 flex-wrap">
             <a href="/" className="flex flex-col whitespace-nowrap order-1">
               <span className="text-white text-2xl font-black tracking-tight leading-none">
@@ -57,33 +68,21 @@ export default async function Home() {
               </span>
               <span className="text-orange-200 text-xs font-light tracking-wide">sadece indirimli ürünler</span>
             </a>
-            {/* FIX: mobilde tam genişlik, sm'de flex-1 */}
             <form action="/arama" method="get" className="flex order-3 sm:order-2 w-full sm:flex-1 sm:max-w-2xl">
-              <input
-                type="text"
-                name="q"
-                placeholder="Ürün, marka veya kategori ara..."
-                className="flex-1 px-4 py-2.5 rounded-l-lg outline-none text-gray-800 text-sm"
-              />
-              <button
-                type="submit"
-                className="bg-yellow-400 hover:bg-yellow-300 px-5 py-2.5 rounded-r-lg font-bold text-gray-800 text-sm transition"
-              >
+              <input type="text" name="q" placeholder="Ürün, marka veya kategori ara..."
+                className="flex-1 px-4 py-2.5 rounded-l-lg outline-none text-gray-800 text-sm" />
+              <button type="submit" className="bg-yellow-400 hover:bg-yellow-300 px-5 py-2.5 rounded-r-lg font-bold text-gray-800 text-sm transition">
                 Ara
               </button>
             </form>
-            {/* FIX: mobilde sağa yasla, sm'de normal akış */}
             <div className="ml-auto sm:ml-0 order-2 sm:order-3">
               <HeaderIkonlar />
             </div>
           </div>
           <nav className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide">
             {navKategoriler.map((cat) => (
-              <a
-                key={cat.slug}
-                href={`/kategori/${cat.slug}`}
-                className="text-white text-xs px-4 py-1.5 whitespace-nowrap hover:bg-orange-600 rounded-full transition"
-              >
+              <a key={cat.slug} href={`/kategori/${cat.slug}`}
+                className="text-white text-xs px-4 py-1.5 whitespace-nowrap hover:bg-orange-600 rounded-full transition">
                 {cat.label}
               </a>
             ))}
@@ -91,11 +90,8 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* HERO + KAMPANYA - tek turuncu blok */}
+      {/* HERO + KAMPANYA */}
       <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400">
-
-        {/* HERO */}
-        {/* FIX: px-4 md:px-8 */}
         <div className="pt-8 pb-4 px-4 md:px-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-4 right-20 text-9xl">🛍️</div>
@@ -106,7 +102,6 @@ export default async function Home() {
               <span className="bg-yellow-400 text-gray-800 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">
                 🔥 YAZA ÖZEL
               </span>
-              {/* FIX: text-3xl mobilde, text-4xl md'de */}
               <h1 className="text-white text-3xl md:text-4xl font-black mb-3 leading-tight">
                 Yaz İndirimi<br />Başladı!
               </h1>
@@ -118,22 +113,14 @@ export default async function Home() {
                 <GeriSayim />
               </div>
               <div className="flex gap-3 flex-wrap">
-                <a
-                  href="/kategori/giyim"
-                  className="bg-white text-orange-500 font-bold px-5 py-2.5 rounded-lg hover:bg-yellow-50 transition shadow-sm text-sm"
-                >
+                <a href="/kategori/giyim" className="bg-white text-orange-500 font-bold px-5 py-2.5 rounded-lg hover:bg-yellow-50 transition shadow-sm text-sm">
                   Şimdi Keşfet →
                 </a>
-                <a
-                  href="/satici/kayit"
-                  className="border-2 border-white text-white font-bold px-5 py-2.5 rounded-lg hover:bg-white hover:text-orange-500 transition text-sm"
-                >
+                <a href="/satici/kayit" className="border-2 border-white text-white font-bold px-5 py-2.5 rounded-lg hover:bg-white hover:text-orange-500 transition text-sm">
                   Satıcı Ol
                 </a>
               </div>
             </div>
-
-            {/* SAĞ: Ürün kartı kolajı — sadece md ve üstünde göster */}
             <div className="hidden md:flex flex-shrink-0 relative w-80 h-56">
               <div className="absolute right-0 top-4 w-36 h-44 bg-white/20 backdrop-blur-sm rounded-2xl rotate-6 border border-white/30" />
               <div className="absolute right-16 top-2 w-36 h-44 bg-white/25 backdrop-blur-sm rounded-2xl -rotate-3 border border-white/30" />
@@ -156,13 +143,8 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* KAMPANYA KARTLARI */}
-        {/* FIX: px-4 md:px-8 */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 pb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <a
-            href="/kategori/elektronik"
-            className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all"
-          >
+          <a href="/kategori/elektronik" className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all">
             <div className="bg-white/20 rounded-xl p-3 flex items-center justify-center flex-shrink-0">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/>
@@ -174,10 +156,7 @@ export default async function Home() {
               <span className="text-yellow-300 text-xs font-semibold">Alışverişe Başla →</span>
             </div>
           </a>
-          <a
-            href="/kategori/giyim"
-            className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all"
-          >
+          <a href="/kategori/giyim" className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all">
             <div className="bg-white/20 rounded-xl p-3 flex items-center justify-center flex-shrink-0">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -189,10 +168,7 @@ export default async function Home() {
               <span className="text-yellow-300 text-xs font-semibold">Alışverişe Başla →</span>
             </div>
           </a>
-          <a
-            href="/kategori/ev-yasam"
-            className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all"
-          >
+          <a href="/kategori/ev-yasam" className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-5 text-white flex items-center gap-4 hover:bg-white/30 transition-all">
             <div className="bg-white/20 rounded-xl p-3 flex items-center justify-center flex-shrink-0">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -206,7 +182,6 @@ export default async function Home() {
             </div>
           </a>
         </div>
-
       </div>
 
       {/* KATEGORİLER */}
@@ -232,36 +207,45 @@ export default async function Home() {
             <span className="text-sm text-gray-400 bg-gray-200 px-3 py-1 rounded-full">{urunler.length} ürün</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {urunler.map((urun: any) => (
-              <a
-                key={urun.id}
-                href={`/urun/${urun.id}`}
-                className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all block"
-              >
-                <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative">
-                  {urun.resim_url ? (
-                    <img src={urun.resim_url} alt={urun.ad} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-5xl">📦</span>
-                  )}
-                  {urun.indirim_orani && (
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                      %{urun.indirim_orani} İNDİRİM
-                    </span>
-                  )}
-                </div>
-                <div className="p-3">
-                  <p className="text-xs text-orange-500 font-medium mb-1">{urun.magaza_adi || urun.satici}</p>
-                  <p className="text-sm text-gray-800 font-medium mb-2 line-clamp-2">{urun.ad}</p>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-orange-500 font-bold text-base md:text-lg">{urun.fiyat} ₺</span>
-                    {urun.eski_fiyat && (
-                      <span className="text-gray-400 text-xs line-through">{urun.eski_fiyat} ₺</span>
+            {urunler.map((urun: any) => {
+              const badge = getBadge(urun)
+              return (
+                <a key={urun.id} href={`/urun/${urun.id}`}
+                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all block">
+                  <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                    {urun.resim_url ? (
+                      <img src={urun.resim_url} alt={urun.ad} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-5xl">📦</span>
                     )}
+                    {urun.indirim_orani && (
+                      <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                        %{urun.indirim_orani} İNDİRİM
+                      </span>
+                    )}
+                    {badge && (
+                      <span className={`absolute top-2 right-2 ${badge.bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg`}>
+                        {badge.label}
+                      </span>
+                    )}
+                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
+                      ✅ Doğrulanmış İndirim
+                    </span>
                   </div>
-                </div>
-              </a>
-            ))}
+                  <div className="p-3">
+                    <p className="text-xs text-orange-500 font-medium mb-1">{urun.magaza_adi || urun.satici}</p>
+                    <p className="text-sm text-gray-800 font-medium mb-2 line-clamp-2">{urun.ad}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-orange-500 font-bold text-base md:text-lg">{urun.fiyat} ₺</span>
+                      {urun.eski_fiyat && (
+                        <span className="text-gray-400 text-xs line-through">{urun.eski_fiyat} ₺</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
+                  </div>
+                </a>
+              )
+            })}
           </div>
         </div>
       )}
@@ -274,16 +258,21 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {statikUrunler.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all"
-            >
+            <div key={product.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all">
               <div className="relative">
                 <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center text-5xl md:text-6xl">
                   {product.icon}
                 </div>
                 <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
                   %{product.discount} İNDİRİM
+                </span>
+                {product.badge && (
+                  <span className={`absolute top-2 right-2 ${product.badge.bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg`}>
+                    {product.badge.label}
+                  </span>
+                )}
+                <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
+                  ✅ Doğrulanmış İndirim
                 </span>
               </div>
               <div className="p-3">
@@ -296,6 +285,7 @@ export default async function Home() {
                   <span className="text-orange-500 font-bold text-base md:text-lg">{product.price} ₺</span>
                   <span className="text-gray-400 text-xs line-through">{product.oldPrice} ₺</span>
                 </div>
+                <p className="text-xs text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
               </div>
             </div>
           ))}
@@ -305,7 +295,6 @@ export default async function Home() {
       {/* ÖNE ÇIKAN MAĞAZALAR */}
       <div className="max-w-7xl mx-auto px-4 py-4 pb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4">🏪 Öne Çıkan Mağazalar</h2>
-        {/* FIX: grid-cols-3 mobilde — 5. kart tek kalmasın */}
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           {[
             { initials: "TM", name: "TechMart", color: "from-orange-400 to-orange-600", products: "128 ürün" },
@@ -314,13 +303,8 @@ export default async function Home() {
             { initials: "KZ", name: "KozmetikZen", color: "from-pink-400 to-pink-600", products: "312 ürün" },
             { initials: "SP", name: "SportPlus", color: "from-blue-400 to-blue-600", products: "175 ürün" },
           ].map((store) => (
-            <div
-              key={store.name}
-              className="bg-white rounded-xl border border-gray-100 p-3 md:p-4 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all text-center"
-            >
-              <div
-                className={`w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${store.color} flex items-center justify-center text-white font-black text-base md:text-xl mx-auto mb-2 md:mb-3 shadow-sm`}
-              >
+            <div key={store.name} className="bg-white rounded-xl border border-gray-100 p-3 md:p-4 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all text-center">
+              <div className={`w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${store.color} flex items-center justify-center text-white font-black text-base md:text-xl mx-auto mb-2 md:mb-3 shadow-sm`}>
                 {store.initials}
               </div>
               <p className="font-semibold text-gray-800 text-xs md:text-sm">{store.name}</p>
