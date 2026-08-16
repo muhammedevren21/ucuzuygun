@@ -124,7 +124,7 @@ export default function SaticiKayit() {
       <div className="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-8 px-4 mb-8">
         <div className="max-w-2xl mx-auto text-center">
           <span className="bg-yellow-400 text-gray-800 text-xs font-black px-3 py-1 rounded-full mb-4 inline-block">
-            🔥 KURUCÜ SATICI KAMPANYASI
+            🔥 KURUCU SATICI KAMPANYASI
           </span>
           <h1 className="text-3xl font-black mb-2">Erken Üye Ol, Az Komisyon Öde!</h1>
           <p className="text-orange-100 mb-6">
