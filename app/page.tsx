@@ -125,7 +125,7 @@ export default async function Home() {
             <div className="hidden md:flex flex-shrink-0 relative w-80 h-56">
               <div className="absolute right-0 top-4 w-36 h-44 bg-white/20 backdrop-blur-sm rounded-2xl rotate-6 border border-white/30" />
               <div className="absolute right-16 top-2 w-36 h-44 bg-white/25 backdrop-blur-sm rounded-2xl -rotate-3 border border-white/30" />
-              <div className="absolute right-8 top-0 w-40 h-48 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-2 border border-orange-100">
+              <a href="/kategori/elektronik" className="absolute right-8 top-0 w-40 h-48 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-2 border border-orange-100 hover:shadow-3xl hover:-translate-y-1 transition-all">
                 <span className="text-5xl">🎧</span>
                 <div className="text-center px-3">
                   <p className="text-gray-800 text-xs font-bold leading-tight">Kablosuz Kulaklık Pro</p>
@@ -133,7 +133,7 @@ export default async function Home() {
                   <p className="text-orange-500 text-lg font-black">849 ₺</p>
                   <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">%43 İNDİRİM</span>
                 </div>
-              </div>
+              </a>
               <div className="absolute left-0 top-6 bg-yellow-400 text-gray-800 text-[10px] font-black px-2 py-1 rounded-lg shadow-md">
                 🔥 Çok Satan
               </div>
