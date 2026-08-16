@@ -16,7 +16,6 @@ function getBadge(urun: any) {
   const created = new Date(urun.created_at)
   const simdi = new Date()
   const gunFarki = (simdi.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
-
   if (indirim >= 50) return { label: '🔥 Çok Satan', bg: 'bg-orange-500' }
   if (gunFarki <= 7) return { label: '🆕 Yeni', bg: 'bg-blue-500' }
   if (indirim >= 30) return { label: '⚡ Fırsat', bg: 'bg-yellow-500' }
@@ -31,6 +30,8 @@ export default async function Home() {
     { id: "s2", icon: "👟", name: "Spor Ayakkabı Erkek", price: "629", oldPrice: "999", discount: "37", rating: "4.5", reviews: "1.203", badge: { label: "⚡ Fırsat", bg: "bg-yellow-500" } },
     { id: "s3", icon: "⌚", name: "Akıllı Saat Siyah", price: "1.249", oldPrice: "1.899", discount: "34", rating: "4.9", reviews: "987", badge: { label: "⭐ Çok Beğenilen", bg: "bg-purple-500" } },
     { id: "s4", icon: "👜", name: "Deri Çanta Kadın", price: "459", oldPrice: "799", discount: "43", rating: "4.6", reviews: "532", badge: { label: "🔥 Çok Satan", bg: "bg-orange-500" } },
+    { id: "s5", icon: "💻", name: "Laptop Çantası", price: "299", oldPrice: "549", discount: "45", rating: "4.7", reviews: "1.102", badge: { label: "🔥 Çok Satan", bg: "bg-orange-500" } },
+    { id: "s6", icon: "🎮", name: "Oyun Kolu", price: "449", oldPrice: "799", discount: "44", rating: "4.8", reviews: "876", badge: { label: "⚡ Fırsat", bg: "bg-yellow-500" } },
   ]
 
   const kategoriler = [
@@ -199,19 +200,96 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* VERİTABANINDAN GELEN ÜRÜNLER */}
+      {/* İNDİRİM ORANI BANTLARI */}
+      <div className="max-w-7xl mx-auto px-4 pb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">İndirim Oranına Göre Keşfet</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <a href="/kategori/elektronik?min_indirim=10" className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md transition-all group">
+            <span className="text-3xl">🏷️</span>
+            <div>
+              <p className="text-2xl font-black text-orange-500">%10</p>
+              <p className="text-xs text-gray-500">ve üzeri indirim</p>
+            </div>
+          </a>
+          <a href="/kategori/elektronik?min_indirim=30" className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md transition-all group">
+            <span className="text-3xl">🔖</span>
+            <div>
+              <p className="text-2xl font-black text-orange-500">%30</p>
+              <p className="text-xs text-gray-500">ve üzeri indirim</p>
+            </div>
+          </a>
+          <a href="/kategori/elektronik?min_indirim=50" className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md transition-all group">
+            <span className="text-3xl">🔥</span>
+            <div>
+              <p className="text-2xl font-black text-orange-500">%50</p>
+              <p className="text-xs text-gray-500">ve üzeri indirim</p>
+            </div>
+          </a>
+          <a href="/kategori/elektronik?min_indirim=70" className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md transition-all group">
+            <span className="text-3xl">💥</span>
+            <div>
+              <p className="text-2xl font-black text-orange-500">%70</p>
+              <p className="text-xs text-gray-500">ve üzeri indirim</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      {/* POPÜLER ÜRÜNLER — yatay scroll */}
+      <div className="max-w-7xl mx-auto px-4 pb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-900">🔥 Popüler Ürünler</h2>
+          <a href="/kategori/elektronik" className="text-orange-500 text-sm font-semibold hover:underline">Tümünü Gör →</a>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
+          {statikUrunler.map((product) => (
+            <div key={product.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-all flex-shrink-0 w-44 md:w-52">
+              <div className="relative">
+                <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center text-5xl">
+                  {product.icon}
+                </div>
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-lg">
+                  %{product.discount}
+                </span>
+                {product.badge && (
+                  <span className={`absolute top-2 right-2 ${product.badge.bg} text-white text-[10px] font-bold px-2 py-0.5 rounded-lg`}>
+                    {product.badge.label}
+                  </span>
+                )}
+                <span className="absolute bottom-2 left-1 bg-black/60 text-white text-[9px] font-medium px-1.5 py-0.5 rounded-full">
+                  ✅ Doğrulanmış
+                </span>
+              </div>
+              <div className="p-3">
+                <p className="text-xs text-gray-800 font-medium mb-1 line-clamp-2">{product.name}</p>
+                <div className="flex items-center gap-1 mb-1">
+                  <span className="text-yellow-400 text-xs">★★★★★</span>
+                  <span className="text-[10px] text-gray-400">({product.reviews})</span>
+                </div>
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-orange-500 font-bold text-sm">{product.price} ₺</span>
+                  <span className="text-gray-400 text-xs line-through">{product.oldPrice} ₺</span>
+                </div>
+                <p className="text-[10px] text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* YENİ EKLENEN ÜRÜNLER — yatay scroll */}
       {urunler.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 pb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-900">🆕 Yeni Eklenen Ürünler</h2>
             <span className="text-sm text-gray-400 bg-gray-200 px-3 py-1 rounded-full">{urunler.length} ürün</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
             {urunler.map((urun: any) => {
               const badge = getBadge(urun)
               return (
                 <a key={urun.id} href={`/urun/${urun.id}`}
-                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all block">
+                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-all flex-shrink-0 w-44 md:w-52 block">
                   <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative">
                     {urun.resim_url ? (
                       <img src={urun.resim_url} alt={urun.ad} className="w-full h-full object-cover" />
@@ -219,29 +297,29 @@ export default async function Home() {
                       <span className="text-5xl">📦</span>
                     )}
                     {urun.indirim_orani && (
-                      <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                        %{urun.indirim_orani} İNDİRİM
+                      <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-lg">
+                        %{urun.indirim_orani}
                       </span>
                     )}
                     {badge && (
-                      <span className={`absolute top-2 right-2 ${badge.bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg`}>
+                      <span className={`absolute top-2 right-2 ${badge.bg} text-white text-[10px] font-bold px-2 py-0.5 rounded-lg`}>
                         {badge.label}
                       </span>
                     )}
-                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
-                      ✅ Doğrulanmış İndirim
+                    <span className="absolute bottom-2 left-1 bg-black/60 text-white text-[9px] font-medium px-1.5 py-0.5 rounded-full">
+                      ✅ Doğrulanmış
                     </span>
                   </div>
                   <div className="p-3">
                     <p className="text-xs text-orange-500 font-medium mb-1">{urun.magaza_adi || urun.satici}</p>
-                    <p className="text-sm text-gray-800 font-medium mb-2 line-clamp-2">{urun.ad}</p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-orange-500 font-bold text-base md:text-lg">{urun.fiyat} ₺</span>
+                    <p className="text-xs text-gray-800 font-medium mb-2 line-clamp-2">{urun.ad}</p>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <span className="text-orange-500 font-bold text-sm">{urun.fiyat} ₺</span>
                       {urun.eski_fiyat && (
                         <span className="text-gray-400 text-xs line-through">{urun.eski_fiyat} ₺</span>
                       )}
                     </div>
-                    <p className="text-xs text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
+                    <p className="text-[10px] text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
                   </div>
                 </a>
               )
@@ -250,42 +328,45 @@ export default async function Home() {
         </div>
       )}
 
-      {/* GÜNÜN FIRSATLARI */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900">⚡ Günün Fırsatları</h2>
-          <p className="text-sm text-gray-500">Kaçırmayın, stoklar sınırlı!</p>
+      {/* GÜNÜN FIRSATLARI — yatay scroll */}
+      <div className="max-w-7xl mx-auto px-4 pb-6">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">⚡ Günün Fırsatları</h2>
+            <p className="text-sm text-gray-500">Kaçırmayın, stoklar sınırlı!</p>
+          </div>
+          <a href="/kategori/elektronik" className="text-orange-500 text-sm font-semibold hover:underline">Tümünü Gör →</a>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {statikUrunler.map((product) => (
-            <div key={product.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all">
+        <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
+          {[...statikUrunler].reverse().map((product) => (
+            <div key={product.id + '-f'} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-all flex-shrink-0 w-44 md:w-52">
               <div className="relative">
-                <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center text-5xl md:text-6xl">
+                <div className="h-36 md:h-44 bg-gray-50 flex items-center justify-center text-5xl">
                   {product.icon}
                 </div>
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                  %{product.discount} İNDİRİM
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-lg">
+                  %{product.discount}
                 </span>
                 {product.badge && (
-                  <span className={`absolute top-2 right-2 ${product.badge.bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg`}>
+                  <span className={`absolute top-2 right-2 ${product.badge.bg} text-white text-[10px] font-bold px-2 py-0.5 rounded-lg`}>
                     {product.badge.label}
                   </span>
                 )}
-                <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
-                  ✅ Doğrulanmış İndirim
+                <span className="absolute bottom-2 left-1 bg-black/60 text-white text-[9px] font-medium px-1.5 py-0.5 rounded-full">
+                  ✅ Doğrulanmış
                 </span>
               </div>
               <div className="p-3">
-                <p className="text-sm text-gray-800 font-medium mb-2 line-clamp-2">{product.name}</p>
+                <p className="text-xs text-gray-800 font-medium mb-1 line-clamp-2">{product.name}</p>
                 <div className="flex items-center gap-1 mb-1">
                   <span className="text-yellow-400 text-xs">★★★★★</span>
-                  <span className="text-xs text-gray-400">({product.reviews})</span>
+                  <span className="text-[10px] text-gray-400">({product.reviews})</span>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-orange-500 font-bold text-base md:text-lg">{product.price} ₺</span>
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-orange-500 font-bold text-sm">{product.price} ₺</span>
                   <span className="text-gray-400 text-xs line-through">{product.oldPrice} ₺</span>
                 </div>
-                <p className="text-xs text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
+                <p className="text-[10px] text-green-600 font-medium mt-1">🚚 Kargo Bedava</p>
               </div>
             </div>
           ))}
