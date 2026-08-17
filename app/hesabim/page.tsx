@@ -65,10 +65,24 @@ export default function HesabimSayfasi() {
 
       const { data: favoriData } = await supabase
         .from('favoriler')
-        .select('*, urunler(*)')
+        .select('*')
         .eq('alici_id', user.id)
         .order('created_at', { ascending: false })
-      setFavoriler(favoriData || [])
+
+      if (favoriData && favoriData.length > 0) {
+        const urunIdleri = favoriData.map((f: any) => Number(f.urun_id))
+        const { data: favoriUrunler } = await supabase
+          .from('urunler')
+          .select('*')
+          .in('id', urunIdleri)
+        const birlesik = favoriData.map((f: any) => ({
+          ...f,
+          urunler: favoriUrunler?.find((u: any) => u.id === Number(f.urun_id))
+        }))
+        setFavoriler(birlesik)
+      } else {
+        setFavoriler([])
+      }
 
       setYukleniyor(false)
     }
@@ -99,18 +113,6 @@ export default function HesabimSayfasi() {
       setTimeout(() => setBasarili(false), 3000)
     }
     setKaydediliyor(false)
-  }
-
-  const tamAdres = (p: any) => {
-    if (!p) return '-'
-    const parcalar = [
-      p.mahalle,
-      p.sokak,
-      p.kapi_no ? `No:${p.kapi_no}` : null,
-      p.daire_no ? `D:${p.daire_no}` : null,
-    ].filter(Boolean).join(' ')
-    const ilIlce = [p.ilce, p.il].filter(Boolean).join('/')
-    return [parcalar, ilIlce].filter(Boolean).join(', ') || '-'
   }
 
   const durumRenk = (durum: string) => {
@@ -241,10 +243,8 @@ export default function HesabimSayfasi() {
                     placeholder="05xx xxx xx xx" />
                 </div>
 
-                {/* ADRES */}
                 <div className="border border-gray-200 rounded-xl p-4 space-y-3">
                   <p className="text-sm font-semibold text-gray-700">📍 Teslimat Adresi</p>
-
                   <div>
                     <label className="block text-xs text-gray-500 mb-1">Mahalle</label>
                     <input type="text" value={form.mahalle}
@@ -252,7 +252,6 @@ export default function HesabimSayfasi() {
                       className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                       placeholder="Bahçelievler Mah." />
                   </div>
-
                   <div>
                     <label className="block text-xs text-gray-500 mb-1">Sokak / Cadde</label>
                     <input type="text" value={form.sokak}
@@ -260,7 +259,6 @@ export default function HesabimSayfasi() {
                       className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                       placeholder="Atatürk Cad." />
                   </div>
-
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">Kapı No</label>
@@ -277,7 +275,6 @@ export default function HesabimSayfasi() {
                         placeholder="5" />
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">İlçe</label>
