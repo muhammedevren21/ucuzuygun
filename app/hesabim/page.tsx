@@ -15,7 +15,16 @@ export default function HesabimSayfasi() {
   const [aktifTab, setAktifTab] = useState<'profil' | 'siparisler' | 'favoriler'>('profil')
   const [yukleniyor, setYukleniyor] = useState(true)
   const [duzenle, setDuzenle] = useState(false)
-  const [form, setForm] = useState({ ad: '', telefon: '', adres: '' })
+  const [form, setForm] = useState({
+    ad: '',
+    telefon: '',
+    mahalle: '',
+    sokak: '',
+    kapi_no: '',
+    daire_no: '',
+    ilce: '',
+    il: '',
+  })
   const [kaydediliyor, setKaydediliyor] = useState(false)
   const [basarili, setBasarili] = useState(false)
 
@@ -38,7 +47,12 @@ export default function HesabimSayfasi() {
         setForm({
           ad: profilData.ad || '',
           telefon: profilData.telefon || '',
-          adres: profilData.adres || '',
+          mahalle: profilData.mahalle || '',
+          sokak: profilData.sokak || '',
+          kapi_no: profilData.kapi_no || '',
+          daire_no: profilData.daire_no || '',
+          ilce: profilData.ilce || '',
+          il: profilData.il || '',
         })
       }
 
@@ -75,9 +89,7 @@ export default function HesabimSayfasi() {
       .upsert({
         id: kullanici.id,
         eposta: kullanici.email,
-        ad: form.ad,
-        telefon: form.telefon,
-        adres: form.adres,
+        ...form,
       })
 
     if (!error) {
@@ -87,6 +99,18 @@ export default function HesabimSayfasi() {
       setTimeout(() => setBasarili(false), 3000)
     }
     setKaydediliyor(false)
+  }
+
+  const tamAdres = (p: any) => {
+    if (!p) return '-'
+    const parcalar = [
+      p.mahalle,
+      p.sokak,
+      p.kapi_no ? `No:${p.kapi_no}` : null,
+      p.daire_no ? `D:${p.daire_no}` : null,
+    ].filter(Boolean).join(' ')
+    const ilIlce = [p.ilce, p.il].filter(Boolean).join('/')
+    return [parcalar, ilIlce].filter(Boolean).join(', ') || '-'
   }
 
   const durumRenk = (durum: string) => {
@@ -155,9 +179,7 @@ export default function HesabimSayfasi() {
             <button key={tab.key}
               onClick={() => setAktifTab(tab.key as any)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition ${
-                aktifTab === tab.key
-                  ? 'bg-orange-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-50'
+                aktifTab === tab.key ? 'bg-orange-500 text-white' : 'text-gray-600 hover:bg-gray-50'
               }`}>
               {tab.label}
             </button>
@@ -203,12 +225,14 @@ export default function HesabimSayfasi() {
                     className="w-full border rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400"
                     placeholder="Adınız Soyadınız" />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                   <input type="email" value={kullanici?.email} disabled
                     className="w-full border rounded-xl px-4 py-3 text-gray-400 bg-gray-50 cursor-not-allowed" />
                   <p className="text-xs text-gray-400 mt-1">E-posta değiştirilemez</p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
                   <input type="tel" value={form.telefon}
@@ -216,13 +240,60 @@ export default function HesabimSayfasi() {
                     className="w-full border rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400"
                     placeholder="05xx xxx xx xx" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Adres</label>
-                  <textarea value={form.adres}
-                    onChange={e => setForm({ ...form, adres: e.target.value })}
-                    rows={3}
-                    className="w-full border rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
-                    placeholder="Teslimat adresiniz..." />
+
+                {/* ADRES */}
+                <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+                  <p className="text-sm font-semibold text-gray-700">📍 Teslimat Adresi</p>
+
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Mahalle</label>
+                    <input type="text" value={form.mahalle}
+                      onChange={e => setForm({ ...form, mahalle: e.target.value })}
+                      className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      placeholder="Bahçelievler Mah." />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Sokak / Cadde</label>
+                    <input type="text" value={form.sokak}
+                      onChange={e => setForm({ ...form, sokak: e.target.value })}
+                      className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      placeholder="Atatürk Cad." />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">Kapı No</label>
+                      <input type="text" value={form.kapi_no}
+                        onChange={e => setForm({ ...form, kapi_no: e.target.value })}
+                        className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        placeholder="42" />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">Daire No</label>
+                      <input type="text" value={form.daire_no}
+                        onChange={e => setForm({ ...form, daire_no: e.target.value })}
+                        className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        placeholder="5" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">İlçe</label>
+                      <input type="text" value={form.ilce}
+                        onChange={e => setForm({ ...form, ilce: e.target.value })}
+                        className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        placeholder="Şişli" />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">İl</label>
+                      <input type="text" value={form.il}
+                        onChange={e => setForm({ ...form, il: e.target.value })}
+                        className="w-full border rounded-lg px-3 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        placeholder="İstanbul" />
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -241,7 +312,14 @@ export default function HesabimSayfasi() {
                 </div>
                 <div className="flex justify-between py-3 border-b border-gray-100">
                   <span className="text-gray-500 text-sm">Adres</span>
-                  <span className="text-gray-900 font-medium text-sm text-right max-w-xs">{profil?.adres || '-'}</span>
+                  <span className="text-gray-900 font-medium text-sm text-right max-w-xs leading-relaxed">
+                    {profil?.mahalle || profil?.sokak ? (
+                      <>
+                        {[profil.mahalle, profil.sokak, profil.kapi_no && `No:${profil.kapi_no}`, profil.daire_no && `D:${profil.daire_no}`].filter(Boolean).join(' ')}<br />
+                        {[profil.ilce, profil.il].filter(Boolean).join('/')}
+                      </>
+                    ) : '-'}
+                  </span>
                 </div>
                 <div className="flex justify-between py-3">
                   <span className="text-gray-500 text-sm">Üyelik Tarihi</span>
