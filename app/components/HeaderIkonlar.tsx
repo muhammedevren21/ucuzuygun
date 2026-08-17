@@ -1,9 +1,10 @@
 'use client'
-
 import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 export default function HeaderIkonlar() {
   const [sepetAdet, setSepetAdet] = useState(0)
+  const [girisYapildi, setGirisYapildi] = useState(false)
 
   const hesapla = () => {
     try {
@@ -20,18 +21,24 @@ export default function HeaderIkonlar() {
   }
 
   useEffect(() => {
-    // Sayfa açılınca hemen oku
     hesapla()
-
-    // sepetGuncellendi event'i — küçük gecikme ile localStorage'ın yazılmasını bekle
     const handleGuncelle = () => setTimeout(hesapla, 50)
-
     window.addEventListener('storage', hesapla)
     window.addEventListener('sepetGuncellendi', handleGuncelle)
+
+    // Kullanıcı giriş durumunu kontrol et
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setGirisYapildi(!!session)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setGirisYapildi(!!session)
+    })
 
     return () => {
       window.removeEventListener('storage', hesapla)
       window.removeEventListener('sepetGuncellendi', handleGuncelle)
+      subscription.unsubscribe()
     }
   }, [])
 
@@ -50,14 +57,13 @@ export default function HeaderIkonlar() {
         </div>
         <span className="font-medium tracking-wide">Sepet</span>
       </a>
-
-      <a href="/satici/giris" className="flex flex-col items-center gap-1 hover:text-yellow-300 transition group">
-        <div className="bg-orange-600 group-hover:bg-orange-700 p-2.5 rounded-xl transition shadow-sm">
+      <a href={girisYapildi ? '/hesabim' : '/giris'} className="flex flex-col items-center gap-1 hover:text-yellow-300 transition group">
+        <div className={`p-2.5 rounded-xl transition shadow-sm ${girisYapildi ? 'bg-green-600 group-hover:bg-green-700' : 'bg-orange-600 group-hover:bg-orange-700'}`}>
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </div>
-        <span className="font-medium tracking-wide">Hesabım</span>
+        <span className="font-medium tracking-wide">{girisYapildi ? 'Hesabım' : 'Giriş'}</span>
       </a>
     </div>
   )
