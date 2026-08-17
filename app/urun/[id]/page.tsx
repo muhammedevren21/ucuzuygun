@@ -15,11 +15,16 @@ export default function UrunDetay({ params }: { params: Promise<{ id: string }> 
   const [benzerUrunler, setBenzerUrunler] = useState<any[]>([])
   const [yukleniyor, setYukleniyor] = useState(true)
   const [eklendi, setEklendi] = useState(false)
+  const [favori, setFavori] = useState(false)
+  const [favoriYukleniyor, setFavoriYukleniyor] = useState(false)
+  const [urunId, setUrunId] = useState<string>('')
   const { ekle } = useSepet()
 
   useEffect(() => {
     async function getUrun() {
       const { id } = await params
+      setUrunId(id)
+
       const { data } = await supabase
         .from('urunler')
         .select('*')
@@ -35,6 +40,18 @@ export default function UrunDetay({ params }: { params: Promise<{ id: string }> 
           .neq('id', id)
           .limit(6)
         setBenzerUrunler(benzer || [])
+      }
+
+      // Favori durumunu kontrol et
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: favoriData } = await supabase
+          .from('favoriler')
+          .select('id')
+          .eq('alici_id', user.id)
+          .eq('urun_id', id)
+          .single()
+        setFavori(!!favoriData)
       }
 
       setYukleniyor(false)
@@ -74,6 +91,32 @@ export default function UrunDetay({ params }: { params: Promise<{ id: string }> 
     })
     setEklendi(true)
     setTimeout(() => setEklendi(false), 2000)
+  }
+
+  const favoriToggle = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      window.location.href = '/giris'
+      return
+    }
+
+    setFavoriYukleniyor(true)
+
+    if (favori) {
+      await supabase
+        .from('favoriler')
+        .delete()
+        .eq('alici_id', user.id)
+        .eq('urun_id', urunId)
+      setFavori(false)
+    } else {
+      await supabase
+        .from('favoriler')
+        .insert({ alici_id: user.id, urun_id: urunId })
+      setFavori(true)
+    }
+
+    setFavoriYukleniyor(false)
   }
 
   return (
@@ -201,10 +244,21 @@ export default function UrunDetay({ params }: { params: Promise<{ id: string }> 
                 }`}>
                 {eklendi ? '✅ Sepete Eklendi!' : '🛒 Sepete Ekle'}
               </button>
-              <button className="border-2 border-gray-200 text-gray-400 py-4 px-5 rounded-xl hover:bg-red-50 hover:border-red-300 hover:text-red-400 transition text-xl">
-                ♡
+              <button
+                onClick={favoriToggle}
+                disabled={favoriYukleniyor}
+                className={`py-4 px-5 rounded-xl text-xl border-2 transition ${
+                  favori
+                    ? 'bg-red-50 border-red-400 text-red-500'
+                    : 'border-gray-200 text-gray-400 hover:bg-red-50 hover:border-red-300 hover:text-red-400'
+                }`}>
+                {favori ? '❤️' : '♡'}
               </button>
             </div>
+
+            {favori && (
+              <p className="text-red-500 text-xs font-medium mb-4">❤️ Favorilerine eklendi</p>
+            )}
 
             {/* GÜVENLİ ALIŞVERİŞ */}
             <div className="grid grid-cols-3 gap-2">
