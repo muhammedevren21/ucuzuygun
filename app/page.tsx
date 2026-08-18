@@ -104,6 +104,11 @@ export default async function Home() {
         </div>
       </header>
 
+      {/* BETA BANNER */}
+      <div className="bg-yellow-400 text-gray-800 text-center text-xs font-medium py-2 px-4">
+        🚧 Beta sürecindeyiz — ürünleri keşfedin, favorileyin. Ödeme sistemi yakında aktif olacak.
+      </div>
+
       {/* HERO + KAMPANYA */}
       <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400">
         <div className="pt-8 pb-4 px-4 md:px-8 relative overflow-hidden">
@@ -426,8 +431,8 @@ export default async function Home() {
               </svg>
             </div>
             <div>
-              <p className="text-xs md:text-sm font-bold text-gray-800">Güvenli Ödeme</p>
-              <p className="text-xs text-gray-500 hidden sm:block">256-bit SSL şifreleme</p>
+              <p className="text-xs md:text-sm font-bold text-gray-800">SSL Güvenli Bağlantı</p>
+              <p className="text-xs text-gray-500 hidden sm:block">256-bit şifreleme</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -448,8 +453,8 @@ export default async function Home() {
               </svg>
             </div>
             <div>
-              <p className="text-xs md:text-sm font-bold text-gray-800">Kolay İade</p>
-              <p className="text-xs text-gray-500 hidden sm:block">14 gün içinde ücretsiz iade</p>
+              <p className="text-xs md:text-sm font-bold text-gray-800">14 Gün İade Hakkı</p>
+              <p className="text-xs text-gray-500 hidden sm:block">Satıcı onayıyla iade</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
