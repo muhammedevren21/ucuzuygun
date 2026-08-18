@@ -104,11 +104,6 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* BETA BANNER */}
-      <div className="bg-yellow-400 text-gray-800 text-center text-xs font-medium py-2 px-4">
-        🚧 Beta sürecindeyiz — ürünleri keşfedin, favorileyin. Ödeme sistemi yakında aktif olacak.
-      </div>
-
       {/* HERO + KAMPANYA */}
       <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400">
         <div className="pt-8 pb-4 px-4 md:px-8 relative overflow-hidden">
