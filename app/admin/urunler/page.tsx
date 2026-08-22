@@ -1,8 +1,5 @@
 "use client";
 
-export default function Page() { return <div className='p-8'><h1 className='text-2xl font-bold capitalize'>urunler</h1><p className='text-gray-500 mt-2'>Yakında eklenecek.</p></div> }
-"use client";
-
 import { useState } from "react";
 import Link from "next/link";
 
@@ -41,7 +38,6 @@ export default function UrunlerPage() {
         </button>
       </div>
 
-      {/* FİLTRELER */}
       <div className="flex gap-3 mb-4">
         <input
           type="text"
@@ -67,7 +63,6 @@ export default function UrunlerPage() {
         </div>
       </div>
 
-      {/* TABLO */}
       <div className="bg-white rounded-lg p-4">
         <table className="w-full text-sm">
           <thead>
