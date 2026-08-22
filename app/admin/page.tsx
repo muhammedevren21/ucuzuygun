@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AdminPanel() {
   const router = useRouter();
@@ -64,18 +65,26 @@ export default function AdminPanel() {
         <nav className="p-4">
           <div className="space-y-1">
             {[
-              { icon: "📊", label: "Dashboard", active: true },
-              { icon: "📦", label: "Ürünler", active: false },
-              { icon: "🏪", label: "Satıcılar", active: false },
-              { icon: "🛒", label: "Siparişler", active: false },
-              { icon: "👥", label: "Kullanıcılar", active: false },
-              { icon: "📈", label: "Raporlar", active: false },
-              { icon: "⚙️", label: "Ayarlar", active: false },
+              { icon: "📊", label: "Dashboard", href: "/admin", active: true },
+              { icon: "📦", label: "Ürünler", href: "/admin/urunler", active: false },
+              { icon: "🏪", label: "Satıcılar", href: "/admin/saticilar", active: false },
+              { icon: "🛒", label: "Siparişler", href: "/admin/siparisler", active: false },
+              { icon: "👥", label: "Kullanıcılar", href: "/admin/kullanicilar", active: false },
+              { icon: "📈", label: "Raporlar", href: "/admin/raporlar", active: false },
+              { icon: "⚙️", label: "Ayarlar", href: "/admin/ayarlar", active: false },
             ].map((item) => (
-              <div key={item.label} className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm ${item.active ? "bg-orange-500 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                  item.active
+                    ? "bg-orange-500 text-white"
+                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                }`}
+              >
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
-              </div>
+              </Link>
             ))}
           </div>
           <div className="mt-8 pt-4 border-t border-gray-700 space-y-1">
@@ -122,7 +131,7 @@ export default function AdminPanel() {
           <div className="md:col-span-2 bg-white rounded-lg p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-gray-800">Son Ürünler</h2>
-              <button className="text-orange-500 text-sm">Tümünü Gör →</button>
+              <Link href="/admin/urunler" className="text-orange-500 text-sm">Tümünü Gör →</Link>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -168,7 +177,7 @@ export default function AdminPanel() {
           <div className="bg-white rounded-lg p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-gray-800">Satıcılar</h2>
-              <button className="text-orange-500 text-sm">Tümü →</button>
+              <Link href="/admin/saticilar" className="text-orange-500 text-sm">Tümü →</Link>
             </div>
             <div className="space-y-3">
               {saticilar.map((satici) => (
